@@ -1,71 +1,81 @@
 <template>
   <v-app>
-    <v-navigation-drawer
-      persistent
-      :mini-variant="miniVariant"
-      :clipped="clipped"
-      v-model="drawer"
-      enable-resize-watcher
-      fixed
-      app
-    >
-      <v-list>
-        <v-list-tile
-          value="true"
-          v-for="(item, i) in items"
-          :key="i"
-        >
-          <v-list-tile-action>
-            <v-icon v-html="item.icon"></v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title v-text="item.title"></v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
+    <v-navigation-drawer 
+      app 
+      clipped 
+      fixed 
+      disable-resize-watcher
+      v-model="drawer">
+      <v-list two-line v-if="isUserAuthorized">
+        <v-subheader>Contacts</v-subheader>
+        <template v-for="(contact, index) in contacts">
+          <v-list-tile
+            avatar
+            :key="index"
+            @click="">
+            <v-list-tile-avatar>
+              <img :src="contact.avatar">
+            </v-list-tile-avatar>
+            <v-list-tile-content>
+              <v-list-tile-title>{{contact.name}}</v-list-tile-title>
+              <v-list-tile-sub-title>{{contact.lastMessage}}</v-list-tile-sub-title>
+            </v-list-tile-content>
+            <v-list-tile-action-text>{{contact.dateLastMessage}}</v-list-tile-action-text>
+          </v-list-tile>
+        </template>
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar
-      app
-      :clipped-left="clipped"
-    >
-      <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-      <v-btn icon @click.stop="miniVariant = !miniVariant">
-        <v-icon v-html="miniVariant ? 'chevron_right' : 'chevron_left'"></v-icon>
-      </v-btn>
-      <v-btn icon @click.stop="clipped = !clipped">
-        <v-icon>web</v-icon>
-      </v-btn>
-      <v-btn icon @click.stop="fixed = !fixed">
-        <v-icon>remove</v-icon>
-      </v-btn>
-      <v-toolbar-title v-text="title"></v-toolbar-title>
+    <v-toolbar app fixed clipped-left color="amber">
+      <v-toolbar-side-icon @click.stop="onToggleDrawer">
+        <v-tooltip bottom>
+          <v-icon color="grey darken-3" slot="activator">people</v-icon>
+          <span>Contacts</span>
+        </v-tooltip>
+      </v-toolbar-side-icon>
+      <v-toolbar-title>
+        <router-link
+          to="/"
+          tag="span"
+          class="pointer"
+        >Messenger
+        </router-link>
+      </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn icon @click.stop="rightDrawer = !rightDrawer">
-        <v-icon>menu</v-icon>
-      </v-btn>
+      <v-tooltip 
+        bottom 
+        v-for="(link, index) in links"
+        :key="index">
+        <v-btn icon slot="activator" :to="link.url">
+          <v-icon color="grey darken-3">{{link.icon}}</v-icon>
+        </v-btn>
+        <span>{{link.tooltip}}</span>
+      </v-tooltip>
+      <v-tooltip bottom v-if="isUserAuthorized">
+        <v-btn icon slot="activator" @click="onLogout">
+          <v-icon color="grey darken-3">exit_to_app</v-icon>
+        </v-btn>
+        <span>Logout</span>
+      </v-tooltip>
     </v-toolbar>
     <v-content>
-      <router-view/>
+      <router-view></router-view>
     </v-content>
-    <v-navigation-drawer
-      temporary
-      :right="right"
-      v-model="rightDrawer"
-      fixed
-      app
-    >
-      <v-list>
-        <v-list-tile @click="right = !right">
-          <v-list-tile-action>
-            <v-icon>compare_arrows</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-title>Switch drawer (click me)</v-list-tile-title>
-        </v-list-tile>
-      </v-list>
-    </v-navigation-drawer>
-    <v-footer :fixed="fixed" app>
-      <span>&copy; 2017</span>
-    </v-footer>
+    <template v-if="error">
+      <v-snackbar
+        color="error"
+        :multi-line="true"
+        :timeout="5000"
+        :value="true"
+        @input="closeError"
+        >{{error}}
+        <v-btn
+          dark
+          flat
+          @click.native="closeError"
+        >Close
+        </v-btn>
+      </v-snackbar>
+    </template> 
   </v-app>
 </template>
 
@@ -73,19 +83,57 @@
 export default {
   data () {
     return {
-      clipped: false,
-      drawer: true,
-      fixed: false,
-      items: [{
-        icon: 'bubble_chart',
-        title: 'Inspire'
-      }],
-      miniVariant: false,
-      right: true,
-      rightDrawer: false,
-      title: 'Vuetify.js'
+      drawer: false,
+      contacts: [
+        { avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg', name: 'Nikita', lastMessage: '11dfgdf dfgdg dg dgdfg dfg dfg df111', dateLastMessage: '29.09.18' },
+        { avatar: 'https://cdn.vuetifyjs.com/images/lists/2.jpg', name: 'Andrew verg rg rg rg rt t t errr rth rtr', lastMessage: '22222', dateLastMessage: '27.09.18' },
+        { avatar: 'https://cdn.vuetifyjs.com/images/lists/3.jpg', name: 'Masha', lastMessage: 'You: 33333', dateLastMessage: '30.09.18' },
+        { avatar: 'https://cdn.vuetifyjs.com/images/lists/4.jpg', name: 'Lena', lastMessage: '44444', dateLastMessage: '29.09.18' },
+        { avatar: 'https://cdn.vuetifyjs.com/images/lists/5.jpg', name: 'Alina', lastMessage: 'You: 55555', dateLastMessage: '23.09.18' }
+      ]
     }
   },
-  name: 'App'
+  methods: {
+    closeError () {
+      this.$store.dispatch('clearError')
+    },
+    onToggleDrawer () {
+      if (this.isUserAuthorized) {
+        this.drawer = !this.drawer
+      }
+    },
+    onLogout () {
+      this.$store.dispatch('logoutUser')
+      this.$router.push('/login')
+    }
+  }, 
+  computed: {
+    error () {
+      return this.$store.getters.error
+    }, 
+    isUserAuthorized () {
+      return this.$store.getters.isUserAuthorized
+    },
+    links () {
+      if (!this.isUserAuthorized) {
+        return [
+          { icon: 'person_add', tooltip: 'Register', url: '/register' },
+          { icon: 'person', tooltip: 'Login', url: '/login' }
+        ]
+      }
+      return []
+    } 
+  },
+  watch: {
+    isUserAuthorized () {
+      this.drawer = this.isUserAuthorized
+    }
+  }
 }
 </script>
+
+<style scoped>
+  .pointer {
+    cursor: pointer;
+  }
+</style>
