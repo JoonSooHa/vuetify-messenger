@@ -1,8 +1,10 @@
 import * as fb from 'firebase'
 
 class User {
-  constructor (id) {
+  constructor (id, name, email) {
     this.id = id
+    this.name = name
+    this.email = email
   }
 }
 
@@ -16,12 +18,13 @@ export default {
     }
   },
   actions: {
-    async registerUser ({commit}, {email, password}) {
+    async registerUser ({commit}, {name, email, password}) {
       commit('clearError')
       commit('setLoading', true)
       try {
         const user = await fb.auth().createUserWithEmailAndPassword(email, password)
-        commit('setUser', new User(user.uid))
+        await fb.database().ref('users').child(user.user.uid).update({name, email})
+        commit('setUser', new User(user.uid, name, email))
         commit('setLoading', false)
       } catch (error) {
         commit('setLoading', false)
@@ -34,7 +37,9 @@ export default {
       commit('setLoading', true)
       try {
         const user = await fb.auth().signInWithEmailAndPassword(email, password)
-        commit('setUser', new User(user.uid))
+        const result = await fb.database().ref('users').child(user.user.uid).once('value')
+        const userDB = result.val()
+        commit('setUser', new User(user.uid, userDB.name, userDB.email))
         commit('setLoading', false)
       } catch (error) {
         commit('setLoading', false)
@@ -42,8 +47,10 @@ export default {
         throw error
       }
     },
-    autoLoginUser ({commit}, payload) {
-      commit('setUser', new User(payload.uid))
+    async autoLoginUser ({commit}, payload) {
+      const result = await fb.database().ref('users').child(payload.uid).once('value')
+      const userDB = result.val()
+      commit('setUser', new User(payload.uid, userDB.name, userDB.email))
     },
     logoutUser ({commit}) {
       fb.auth().signOut()
