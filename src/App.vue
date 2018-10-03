@@ -83,14 +83,7 @@
 export default {
   data () {
     return {
-      drawer: false,
-      contacts: [
-        { avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg', name: 'Nikita', lastMessage: '11dfgdf dfgdg dg dgdfg dfg dfg df111', dateLastMessage: '29.09.18' },
-        { avatar: 'https://cdn.vuetifyjs.com/images/lists/2.jpg', name: 'Andrew verg rg rg rg rt t t errr rth rtr', lastMessage: '22222', dateLastMessage: '27.09.18' },
-        { avatar: 'https://cdn.vuetifyjs.com/images/lists/3.jpg', name: 'Masha', lastMessage: 'You: 33333', dateLastMessage: '30.09.18' },
-        { avatar: 'https://cdn.vuetifyjs.com/images/lists/4.jpg', name: 'Lena', lastMessage: '44444', dateLastMessage: '29.09.18' },
-        { avatar: 'https://cdn.vuetifyjs.com/images/lists/5.jpg', name: 'Alina', lastMessage: 'You: 55555', dateLastMessage: '23.09.18' }
-      ]
+      drawer: false
     }
   },
   methods: {
@@ -122,7 +115,10 @@ export default {
         ]
       }
       return []
-    } 
+    },
+    contacts () {
+      return this.$store.getters.contacts
+    }
   },
   watch: {
     isUserAuthorized () {

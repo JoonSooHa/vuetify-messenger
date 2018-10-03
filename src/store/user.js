@@ -24,7 +24,7 @@ export default {
       try {
         const user = await fb.auth().createUserWithEmailAndPassword(email, password)
         await fb.database().ref('users').child(user.user.uid).update({name, email})
-        commit('setUser', new User(user.uid, name, email))
+        commit('setUser', new User(user.user.uid, name, email))
         commit('setLoading', false)
       } catch (error) {
         commit('setLoading', false)
@@ -39,7 +39,7 @@ export default {
         const user = await fb.auth().signInWithEmailAndPassword(email, password)
         const result = await fb.database().ref('users').child(user.user.uid).once('value')
         const userDB = result.val()
-        commit('setUser', new User(user.uid, userDB.name, userDB.email))
+        commit('setUser', new User(user.user.uid, userDB.name, userDB.email))
         commit('setLoading', false)
       } catch (error) {
         commit('setLoading', false)

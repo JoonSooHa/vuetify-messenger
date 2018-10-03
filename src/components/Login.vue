@@ -69,8 +69,8 @@
             email: this.email,
             password: this.password
           }
-
           this.$store.dispatch('loginUser', user)
+          this.$store.dispatch('fetchContacts')
           .then(() => {
             this.$router.push('/')
           })

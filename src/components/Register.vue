@@ -98,8 +98,8 @@
             email: this.email,
             password: this.password
           }
-
           this.$store.dispatch('registerUser', user)
+          this.$store.dispatch('fetchContacts')
           .then(() => {
             this.$router.push('/')
           })
@@ -113,4 +113,4 @@
       }
     }
   }
-</script> 
+</script>

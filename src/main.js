@@ -31,8 +31,8 @@ new Vue({
     fb.auth().onAuthStateChanged(user => {
       if (user) {
         this.$store.dispatch('autoLoginUser', user)
+        this.$store.dispatch('fetchContacts')
       }
     })
-    // this.$store.dispatch('fetchProducts')
   }
 })
