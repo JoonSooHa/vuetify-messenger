@@ -10,17 +10,27 @@
         <v-subheader>Contacts</v-subheader>
         <template v-for="(contact, index) in contacts">
           <v-list-tile
+            :class="isSelectedContact(contact) ? 'selected-contact' : ''"
             avatar
             :key="index"
-            @click="">
+            @click="setInterlocutor(contact)">
             <v-list-tile-avatar>
               <img :src="contact.avatar">
             </v-list-tile-avatar>
             <v-list-tile-content>
-              <v-list-tile-title>{{contact.name}}</v-list-tile-title>
-              <v-list-tile-sub-title>{{contact.lastMessage}}</v-list-tile-sub-title>
+              <v-list-tile-title 
+                :class="isSelectedContact(contact) ? 'white--text' : ''"
+              >{{contact.name}}
+              </v-list-tile-title>
+              <v-list-tile-sub-title 
+                :class="isSelectedContact(contact) ? 'white--text' : ''"
+              >{{contact.lastMessage}}
+              </v-list-tile-sub-title>
             </v-list-tile-content>
-            <v-list-tile-action-text>{{contact.dateLastMessage}}</v-list-tile-action-text>
+            <v-list-tile-action-text
+              :class="isSelectedContact(contact) ? 'white--text' : ''"
+            >{{contact.dateLastMessage | formatDate}}
+            </v-list-tile-action-text>
           </v-list-tile>
         </template>
       </v-list>
@@ -80,6 +90,8 @@
 </template>
 
 <script>
+import moment from 'moment'
+
 export default {
   data () {
     return {
@@ -87,6 +99,18 @@ export default {
     }
   },
   methods: {
+    setInterlocutor (contact) {
+      const obj = {
+        from: this.user,
+        to: this.interlocutor
+      }
+      this.$store.commit('setInterlocutor', contact)
+      this.$store.dispatch('fetchMessages', obj)
+      this.drawer = false
+    },
+    isSelectedContact (contact) {
+      return this.interlocutor && contact.id === this.interlocutor.id
+    },
     closeError () {
       this.$store.dispatch('clearError')
     },
@@ -118,6 +142,16 @@ export default {
     },
     contacts () {
       return this.$store.getters.contacts
+    },
+    interlocutor () {
+      return this.$store.getters.interlocutor
+    }
+  },
+  filters: {
+    formatDate (value) {
+      if (value) {
+        return moment(new Date(value)).format('MM/DD/YY')
+      }
     }
   },
   watch: {
@@ -131,5 +165,8 @@ export default {
 <style scoped>
   .pointer {
     cursor: pointer;
+  }
+  .selected-contact {
+    background-color: #FFC107; /* amber */
   }
 </style>

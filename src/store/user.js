@@ -1,10 +1,12 @@
 import * as fb from 'firebase'
+import gravatar from 'gravatar'
 
 class User {
-  constructor (id, name, email) {
+  constructor (id, name, email, avatar) {
     this.id = id
     this.name = name
     this.email = email
+    this.avatar = avatar
   }
 }
 
@@ -24,7 +26,12 @@ export default {
       try {
         const user = await fb.auth().createUserWithEmailAndPassword(email, password)
         await fb.database().ref('users').child(user.user.uid).update({name, email})
-        commit('setUser', new User(user.user.uid, name, email))
+        commit('setUser', new User(
+          user.user.uid,
+          name,
+          email,
+          gravatar.url(email, {s: '100', d: 'identicon'})
+        ))
         commit('setLoading', false)
       } catch (error) {
         commit('setLoading', false)
@@ -39,7 +46,12 @@ export default {
         const user = await fb.auth().signInWithEmailAndPassword(email, password)
         const result = await fb.database().ref('users').child(user.user.uid).once('value')
         const userDB = result.val()
-        commit('setUser', new User(user.user.uid, userDB.name, userDB.email))
+        commit('setUser', new User(
+          user.user.uid,
+          userDB.name,
+          userDB.email,
+          gravatar.url(userDB.email, {s: '100', d: 'identicon'})
+        ))
         commit('setLoading', false)
       } catch (error) {
         commit('setLoading', false)
@@ -50,7 +62,12 @@ export default {
     async autoLoginUser ({commit}, payload) {
       const result = await fb.database().ref('users').child(payload.uid).once('value')
       const userDB = result.val()
-      commit('setUser', new User(payload.uid, userDB.name, userDB.email))
+      commit('setUser', new User(
+        payload.uid,
+        userDB.name,
+        userDB.email,
+        gravatar.url(userDB.email, {s: '100', d: 'identicon'})
+      ))
     },
     logoutUser ({commit}) {
       fb.auth().signOut()

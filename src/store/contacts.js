@@ -15,9 +15,13 @@ class Contact {
 
 export default {
   state: {
+    interlocutor: null,
     contacts: []
   },
   mutations: {
+    setInterlocutor (state, payload) {
+      state.interlocutor = payload
+    },
     setContacts (state, payload) {
       state.contacts = payload
     }
@@ -40,7 +44,7 @@ export default {
               contacts[key].name,
               contacts[key].email,
               'lastMessage',
-              'dateLastMessage',
+              1538636239000,
               gravatar.url(contacts[key].email, {s: '100', d: 'identicon'})
             )
             resultContacts.push(newContact)
@@ -55,6 +59,9 @@ export default {
     }
   },
   getters: {
+    interlocutor (state) {
+      return state.interlocutor
+    },
     contacts (state) {
       return state.contacts
     }
