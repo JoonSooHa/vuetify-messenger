@@ -1,6 +1,9 @@
-# vuetify-messenger
+![vuetify-messenger](https://github.com/Perkovsky/vuetify-messenger/blob/master/static/Messenger.png)
 
-> A Vue.js project
+> A messenger built with Vue, Vuex, Vue-Router, Vuetify, Firebase.
+
+## Live Demo
+https://vuetifymessenger.firebaseapp.com/
 
 ## Build Setup
 
@@ -19,3 +22,7 @@ npm run build --report
 ```
 
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+
+## Configuration
+
+Edit main.js to initialize your Firebase App.
