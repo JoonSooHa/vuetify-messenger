@@ -29,7 +29,7 @@
             </v-list-tile-content>
             <v-list-tile-action-text
               :class="isSelectedContact(contact) ? 'white--text' : ''"
-            >{{contact.dateLastMessage | formatDate}}
+            >{{contact.timestamp | formatDate}}
             </v-list-tile-action-text>
           </v-list-tile>
         </template>
@@ -64,7 +64,7 @@
         <v-btn icon slot="activator" @click="onLogout">
           <v-icon color="grey darken-3">exit_to_app</v-icon>
         </v-btn>
-        <span>Logout</span>
+        <span>Logout from {{user.name}}</span>
       </v-tooltip>
     </v-toolbar>
     <v-content>
@@ -101,8 +101,8 @@ export default {
   methods: {
     setInterlocutor (contact) {
       const obj = {
-        from: this.user,
-        to: this.interlocutor
+        from: this.user.id,
+        to: contact.id
       }
       this.$store.commit('setInterlocutor', contact)
       this.$store.dispatch('fetchMessages', obj)
@@ -127,9 +127,12 @@ export default {
   computed: {
     error () {
       return this.$store.getters.error
-    }, 
+    },
+    user () {
+      return this.$store.getters.user
+    },
     isUserAuthorized () {
-      return this.$store.getters.isUserAuthorized
+      return this.user !== null
     },
     links () {
       if (!this.isUserAuthorized) {

@@ -72,14 +72,13 @@ export default {
     logoutUser ({commit}) {
       fb.auth().signOut()
       commit('setUser', null)
+      commit('setInterlocutor', null)
+      commit('setMessages', [])
     }
   },
   getters: {
     user (state) {
       return state.user
-    },
-    isUserAuthorized (state) {
-      return state.user !== null
     }
   }
 }

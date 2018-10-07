@@ -9,8 +9,8 @@
       :user="user"
       :interlocutor="interlocutor">
     </app-messages>
-    <v-layout id="scroll-to-element">
-      <span style="height: 90px" />
+    <v-layout>
+      <span id="scroll-to-element" style="height: 55px" />
     </v-layout>
     <v-footer app inset height="64px">
       <v-layout row align-center class="pa-4">
@@ -85,7 +85,6 @@ export default {
       }
       this.$store.dispatch('sendMessage', msg)
       this.clearMessage()
-      this.scrollToEnd()
     }
   },
   computed: {
@@ -98,10 +97,13 @@ export default {
     messages () {
       return this.$store.getters.messages
     }
+  },
+  updated: function() {
+    if (this.message) {
+      return
+    }
+    this.scrollToEnd()
   }
-  // updated: function() {
-  //   this.scrollToEnd()
-  // }
 }
 </script>
 

@@ -3,12 +3,12 @@ import getUserState from './getUserState'
 import gravatar from 'gravatar'
 
 class Contact {
-  constructor (id, name, email, lastMessage, dateLastMessage, avatar) {
+  constructor (id, name, email, lastMessage, timestamp, avatar) {
     this.id = id
     this.name = name
     this.email = email
     this.lastMessage = lastMessage
-    this.dateLastMessage = dateLastMessage
+    this.timestamp = timestamp
     this.avatar = avatar
   }
 }
@@ -35,6 +35,9 @@ export default {
           const resultContacts = []
           const currentUser = await getUserState()
           const contacts = snapshot.val()
+          const currentUserChats = (contacts[currentUser.id] && contacts[currentUser.id].chats)
+            ? contacts[currentUser.id].chats
+            : []
           for (const key in contacts) {
             if (currentUser.id === key) {
               continue
@@ -43,8 +46,8 @@ export default {
               key,
               contacts[key].name,
               contacts[key].email,
-              'lastMessage',
-              1538636239000,
+              currentUserChats[key] ? currentUserChats[key].lastMessage : '',
+              currentUserChats[key] ? currentUserChats[key].timestamp : '',
               gravatar.url(contacts[key].email, {s: '100', d: 'identicon'})
             )
             resultContacts.push(newContact)
