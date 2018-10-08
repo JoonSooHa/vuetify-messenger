@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import AuthGuard from './auth-guard'
+import Home from '@/components/Home'
 import Chat from '@/components/Chat'
 import Login from '@/components/Login'
 import Register from '@/components/Register'
@@ -12,9 +13,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'Chat',
-      component: Chat,
-      beforeEnter: AuthGuard
+      name: 'Home',
+      component: Home
     },
     {
       path: '/login',
@@ -25,6 +25,12 @@ export default new Router({
       path: '/register',
       name: 'Register',
       component: Register
+    },
+    {
+      path: '/chat',
+      name: 'Chat',
+      component: Chat,
+      beforeEnter: AuthGuard
     },
     {
       path: '*',

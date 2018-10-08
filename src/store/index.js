@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import createPersistedState from 'vuex-persistedstate'
 import common from './common'
 import user from './user'
 import contacts from './contacts'
@@ -13,5 +14,6 @@ export default new Vuex.Store({
     user,
     contacts,
     messages
-  }
+  },
+  plugins: [createPersistedState()]
 })

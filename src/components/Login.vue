@@ -25,7 +25,8 @@
                 name="password"
                 label="Password" 
                 type="password"
-                required>
+                required
+                @keyup.enter="onSubmit">
               </v-text-field>
             </v-form>
           </v-card-text>
